@@ -76,12 +76,12 @@ flowchart TB
     K --> L & M
     L & M --> N --> O
 
-    style INPUT fill:#E0E7FF,stroke:#4F46E5
-    style INGESTION fill:#FEF3C7,stroke:#F59E0B
-    style EMBEDDING fill:#D1FAE5,stroke:#10B981
-    style RAG fill:#DBEAFE,stroke:#3B82F6
-    style QUALITY fill:#FCE7F3,stroke:#EC4899
-    style OUTPUT fill:#F3E8FF,stroke:#8B5CF6
+    style INPUT fill:#312e81,stroke:#6366f1,color:#e0e7ff
+    style INGESTION fill:#78350f,stroke:#f59e0b,color:#fef3c7
+    style EMBEDDING fill:#064e3b,stroke:#10b981,color:#d1fae5
+    style RAG fill:#1e3a8a,stroke:#3b82f6,color:#dbeafe
+    style QUALITY fill:#831843,stroke:#ec4899,color:#fce7f3
+    style OUTPUT fill:#4c1d95,stroke:#8b5cf6,color:#f3e8ff
 ```
 
 ## Quality Gate Decision Framework
@@ -106,10 +106,10 @@ flowchart TD
     GATE -->|"Both Pass"| DEPLOY["✅ Production<br/>Ready"]
     GATE -->|"Any Fail"| INVESTIGATE["🔍 Investigate<br/>& Improve"]
 
-    style START fill:#E0E7FF,stroke:#4F46E5
-    style DEPLOY fill:#D1FAE5,stroke:#10B981
-    style RETRY fill:#FEF3C7,stroke:#F59E0B
-    style INVESTIGATE fill:#FEE2E2,stroke:#EF4444
+    style START fill:#312e81,stroke:#6366f1,color:#e0e7ff
+    style DEPLOY fill:#064e3b,stroke:#10b981,color:#d1fae5
+    style RETRY fill:#78350f,stroke:#f59e0b,color:#fef3c7
+    style INVESTIGATE fill:#7f1d1d,stroke:#ef4444,color:#fee2e2
 ```
 
 ## Project Structure
@@ -184,7 +184,7 @@ flowchart TB
 
         subgraph LLM["Language Model"]
             CLAUDEX["Claudex<br/>:8081"]
-            CLAUDE["Claude Code<br/>CLI Wrapper"]
+            WRAPPER["CLI Wrapper"]
         end
 
         subgraph EVAL["Evaluation"]
@@ -193,17 +193,17 @@ flowchart TB
     end
 
     TEI --- NOMIC
-    CLAUDEX --- CLAUDE
+    CLAUDEX --- WRAPPER
 
     NOMIC --> FAISS
     FAISS --> CLAUDEX
     CLAUDEX --> RAGAS
 
-    style LOCAL fill:#F0FDF4,stroke:#16A34A
-    style EMBED fill:#DBEAFE,stroke:#3B82F6
-    style VECTOR fill:#FEF3C7,stroke:#F59E0B
-    style LLM fill:#E0E7FF,stroke:#4F46E5
-    style EVAL fill:#FCE7F3,stroke:#EC4899
+    style LOCAL fill:#14532d,stroke:#16a34a,color:#dcfce7
+    style EMBED fill:#1e3a8a,stroke:#3b82f6,color:#dbeafe
+    style VECTOR fill:#78350f,stroke:#f59e0b,color:#fef3c7
+    style LLM fill:#312e81,stroke:#6366f1,color:#e0e7ff
+    style EVAL fill:#831843,stroke:#ec4899,color:#fce7f3
 ```
 
 ## RAGAS Metrics Explained
@@ -284,7 +284,7 @@ flowchart LR
         B["Model Quality<br/>Matters!"]
     end
 
-    subgraph LARGE["🔷 Large Model<br/>Claude (Claudex)"]
+    subgraph LARGE["🔷 Large Model<br/>Claudex"]
         C1["Faithfulness<br/>0.839 (+74%)"]
         C2["Relevancy<br/>0.973 (+8%)"]
         C3["Average<br/>0.906 (+31%)"]
@@ -297,9 +297,9 @@ flowchart LR
     B --> C2
     B --> C3
 
-    style SMALL fill:#FEE2E2,stroke:#EF4444
-    style IMPROVEMENT fill:#FEF3C7,stroke:#F59E0B
-    style LARGE fill:#D1FAE5,stroke:#10B981
+    style SMALL fill:#7f1d1d,stroke:#ef4444,color:#fee2e2
+    style IMPROVEMENT fill:#78350f,stroke:#f59e0b,color:#fef3c7
+    style LARGE fill:#064e3b,stroke:#10b981,color:#d1fae5
 ```
 
 ## Sample Output
