@@ -194,27 +194,42 @@ flowchart TB
 ## RAGAS Metrics Explained
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'background': '#0B0F19', 'primaryColor': '#1E293B', 'primaryTextColor': '#E5E7EB', 'primaryBorderColor': '#334155', 'lineColor': '#475569'}}}%%
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'background': '#FFFFFF',
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#CBD5E1',
+    'lineColor': '#64748B',
+    'secondaryColor': '#E0F2FE',
+    'secondaryTextColor': '#0C4A6E',
+    'tertiaryColor': '#ECFEFF',
+    'tertiaryTextColor': '#164E63',
+    'fontFamily': 'Inter, system-ui, -apple-system, BlinkMacSystemFont'
+  }
+}}%%
 mindmap
-  root((RAGAS<br/>Metrics))
+  root((RAGAS Metrics))
     Faithfulness
       Mede alucinações
       Resposta baseada no contexto?
-      Score baixo = Inventando fatos
-      Meta: ≥ 0.7
+      Score baixo = inventando fatos
+      Meta ≥ 0.7
     Answer Relevancy
       Responde à pergunta?
       Foco no objetivo do usuário
-      Score baixo = Off-topic
-      Meta: ≥ 0.8
+      Score baixo = off-topic
+      Meta ≥ 0.8
     Context Precision
       Chunks relevantes no topo?
       Qualidade do retrieval
       Ranking importa
     Context Recall
-      Toda info necessária?
+      Toda informação necessária?
       Cobertura do contexto
       Requer ground truth
+
 ```
 
 | Metric | What It Measures | Threshold | Risk if Low |
