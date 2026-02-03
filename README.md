@@ -27,7 +27,7 @@ xychart-beta
 ## What You'll Learn
 
 1. **Document Ingestion**: Load PDFs and split into chunks
-2. **Vector Store**: Create embeddings with local Nomic model and index with FAISS
+2. **Vector Store**: Create embeddings and index with FAISS (default) or Qdrant (Mac Silicon)
 3. **RAG Pipeline**: Retrieve context and generate answers (Ollama or Claudex)
 4. **RAGAS Evaluation**: Measure quality with automated metrics
 5. **Quality Gates**: Automated thresholds for production readiness
@@ -113,7 +113,7 @@ rag-improve-ragas/
 ├── src/
 │   ├── __init__.py
 │   ├── document_loader.py # PDF loading & chunking
-│   ├── vector_store.py    # FAISS vector store + TEI embeddings
+│   ├── vector_store.py    # Vector store (FAISS+TEI or Qdrant+SentenceTransformers)
 │   ├── rag_pipeline.py    # Naive RAG (Ollama/Claudex)
 │   └── evaluator.py       # RAGAS evaluation wrapper
 ├── data/                  # Vector store persistence
@@ -157,6 +157,57 @@ docker run -p 8081:8081 \
 ```bash
 uv run python main.py
 ```
+
+### Quick Start (Mac Silicon - No Docker Required)
+
+If you're on Apple Silicon (M1/M2/M3/M4), you can run the project without TEI server or Docker by using the **Qdrant backend**:
+
+#### 1. Setup Environment
+
+```bash
+uv sync
+```
+
+#### 2. Configure `.env`
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set:
+
+```bash
+# Use Qdrant backend (no TEI server needed)
+VECTOR_BACKEND=qdrant
+
+# Choose your LLM:
+# Option A: Ollama (fully local)
+OLLAMA_MODEL=qwen2.5:3b
+USE_CLAUDEX=false
+
+# Option B: Claudex
+# CLAUDEX_URL=http://localhost:8081/v1
+# USE_CLAUDEX=true
+```
+
+#### 3. Run
+
+```bash
+# If using Ollama, make sure it's running:
+ollama pull qwen2.5:3b
+
+# Run the pipeline
+uv run python main.py
+```
+
+**What's different?**
+
+| | Default (FAISS) | Mac Silicon (Qdrant) |
+|---|---|---|
+| **Embeddings** | Nomic via TEI server | SentenceTransformers (local CPU) |
+| **Vector Store** | FAISS | Qdrant (in-memory) |
+| **External Services** | TEI server required | None |
+| **Config** | `VECTOR_BACKEND=faiss` | `VECTOR_BACKEND=qdrant` |
 
 ## Technical Stack
 
@@ -355,11 +406,19 @@ AVERAGE SCORE: 0.906
 
 ## Troubleshooting
 
+### FAISS compilation fails on Mac Silicon
+Use the Qdrant backend instead — no compilation needed:
+```bash
+# In .env
+VECTOR_BACKEND=qdrant
+```
+
 ### "Connection refused" on TEI
-Ensure TEI server is running:
+Ensure TEI server is running (only needed with `VECTOR_BACKEND=faiss`):
 ```bash
 curl http://localhost:8080/health
 ```
+Or switch to Qdrant backend to skip TEI entirely.
 
 ### "Connection refused" on Claudex
 Claudex is optional. Set `USE_CLAUDEX = False` to use Ollama:
@@ -382,6 +441,8 @@ ollama pull qwen2.5:3b
 - [RAGAS Documentation](https://docs.ragas.io/)
 - [LangChain Documentation](https://python.langchain.com/)
 - [FAISS Documentation](https://faiss.ai/)
+- [Qdrant Documentation](https://qdrant.tech/documentation/)
+- [SentenceTransformers](https://www.sbert.net/)
 - [Text Embeddings Inference](https://github.com/huggingface/text-embeddings-inference)
 - [Nomic Embed](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5)
 - [Claudex](https://github.com/Leeaandrob/claudex) - OpenAI-compatible API wrapper for Claude CLI

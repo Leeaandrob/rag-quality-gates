@@ -85,6 +85,7 @@ class RAGASEvaluator:
         claudex_url: str = "http://localhost:8081/v1",
         ollama_model: str = "qwen2.5:3b",
         tei_url: str = "http://localhost:8080",
+        vector_backend: str = "faiss",
     ):
         """
         Initialize the evaluator with specified metrics.
@@ -95,13 +96,15 @@ class RAGASEvaluator:
             use_claudex: If True, use Claudex for evaluation.
             claudex_url: URL of Claudex server.
             ollama_model: Ollama model to use for evaluation.
-            tei_url: URL of TEI server for embeddings.
+            tei_url: URL of TEI server for embeddings (FAISS backend only).
+            vector_backend: "faiss" or "qdrant". Determines embeddings source.
         """
         self.use_local = use_local
         self.use_claudex = use_claudex
         self.claudex_url = claudex_url
         self.ollama_model = ollama_model
         self.tei_url = tei_url
+        self.vector_backend = vector_backend
 
         # Default metrics (no ground truth required)
         if metrics is None:
@@ -118,11 +121,19 @@ class RAGASEvaluator:
         else:
             print(f"[Evaluator] Using OpenAI for evaluation")
 
+    def _get_embeddings(self):
+        """Get embeddings based on vector backend configuration."""
+        if self.vector_backend == "qdrant":
+            from src.vector_store import get_local_embeddings
+            return get_local_embeddings()
+        else:
+            from src.vector_store import TEIEmbeddings
+            return TEIEmbeddings(base_url=self.tei_url)
+
     def _setup_metrics(self):
         """Setup RAGAS metrics with appropriate LLM/embeddings."""
         if self.use_claudex:
             from langchain_openai import ChatOpenAI
-            from src.vector_store import TEIEmbeddings
             from ragas.llms import LangchainLLMWrapper
             from ragas.embeddings import LangchainEmbeddingsWrapper
 
@@ -132,7 +143,7 @@ class RAGASEvaluator:
                 api_key="not-needed",
                 temperature=0,
             )
-            embeddings = TEIEmbeddings(base_url=self.tei_url)
+            embeddings = self._get_embeddings()
 
             wrapped_llm = LangchainLLMWrapper(llm)
             wrapped_embeddings = LangchainEmbeddingsWrapper(embeddings)
@@ -154,12 +165,11 @@ class RAGASEvaluator:
                     self.metrics.append(SemanticSimilarity(embeddings=wrapped_embeddings))
         elif self.use_local:
             from langchain_ollama import ChatOllama
-            from src.vector_store import TEIEmbeddings
             from ragas.llms import LangchainLLMWrapper
             from ragas.embeddings import LangchainEmbeddingsWrapper
 
             llm = ChatOllama(model=self.ollama_model, temperature=0)
-            embeddings = TEIEmbeddings(base_url=self.tei_url)
+            embeddings = self._get_embeddings()
 
             wrapped_llm = LangchainLLMWrapper(llm)
             wrapped_embeddings = LangchainEmbeddingsWrapper(embeddings)

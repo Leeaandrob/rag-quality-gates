@@ -12,8 +12,16 @@ langchain-ollama>=0.3.0
 pypdf>=4.0.0
 langchain-text-splitters>=0.3.0
 
-# Vector Store
+# Vector Store - FAISS (default, requires TEI server)
 faiss-cpu>=1.7.4
+
+# Vector Store - Qdrant (Mac Silicon alternative, no server needed)
+langchain-qdrant>=0.2.0
+qdrant-client>=1.7.0
+
+# Local Embeddings (Mac Silicon compatible - alternative to TEI)
+langchain-huggingface>=0.1.0
+sentence-transformers>=2.2.0
 
 # RAGAS Evaluation
 ragas>=0.2.0
